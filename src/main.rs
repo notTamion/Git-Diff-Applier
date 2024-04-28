@@ -7,14 +7,24 @@ fn main() {
 
     let mut simplified_patch = ColoredString::from("");
     for line in patch.lines() {
-        match line.chars().next().unwrap_or(' ') {
+        if line.len() == 0 {
+            simplified_patch = format!("{}\n", simplified_patch).into();
+            continue
+        }
+
+        match line.chars().next().unwrap() {
             '+' => {
                 let mut s = line.to_string();
                 s.remove(0);
-                simplified_patch = format!("{} {}\n", simplified_patch, s.as_str()).green();
+                simplified_patch = format!("{}{}\n", simplified_patch, s.green()).into();
+            },
+            ' ' => {
+                let mut s = line.to_string();
+                s.remove(0);
+                simplified_patch = format!("{}{}\n", simplified_patch, s).into();
             },
             '-' => {}
-            _ => simplified_patch = format!("{}{}\n", simplified_patch, line).white()
+            _ => simplified_patch = format!("{}{}\n", simplified_patch, line.white()).into()
         }
     }
 
